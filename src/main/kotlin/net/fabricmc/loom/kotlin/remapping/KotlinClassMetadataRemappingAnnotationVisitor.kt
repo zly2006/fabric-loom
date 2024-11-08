@@ -62,8 +62,13 @@ class KotlinClassMetadataRemappingAnnotationVisitor(
                     "is using (${KotlinVersion.CURRENT}).",
             )
         }
+        val metadata = KotlinClassMetadata.readLenient(header)
+        if (metadata.version.major < 1 || (metadata.version.major == 1 && metadata.version.minor < 4)) {
+            logger.warn("$className is not supported by kotlin metadata remapping (version: ${metadata.version})")
+            return
+        }
 
-        when (val metadata = KotlinClassMetadata.readLenient(header)) {
+        when (metadata) {
             is KotlinClassMetadata.Class -> {
                 var klass = metadata.kmClass
                 klass = KotlinClassRemapper(remapper).remap(klass)
