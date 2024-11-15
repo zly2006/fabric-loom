@@ -65,6 +65,7 @@ class KotlinClassMetadataRemappingAnnotationVisitor(
         val metadata = KotlinClassMetadata.readLenient(header)
         if (metadata.version.major < 1 || (metadata.version.major == 1 && metadata.version.minor < 4)) {
             logger.warn("$className is not supported by kotlin metadata remapping (version: ${metadata.version})")
+            accept(next)
             return
         }
 
